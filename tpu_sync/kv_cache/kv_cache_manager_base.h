@@ -1092,6 +1092,13 @@ class KVCacheManagerBase : public tpu_raiden::RaidenManagerBase {
       ABSL_EXCLUSIVE_LOCKS_REQUIRED(external_mapping_mu_);
 };
 
+// Test-only entry point: samples `<sysfs_node_dir>/node<N>/meminfo` and updates
+// the `tpu_raiden_host_numa_memory_bytes` gauge, bypassing the 5-second
+// throttle in `KVCacheManagerBase::UpdateAllocatedOccupancyMetric()`. Emits
+// only on the primary local worker of `manager` (`local_rank == "0"`).
+void RecordHostNumaMemoryMetricsForTesting(const KVCacheManagerBase& manager,
+                                           absl::string_view sysfs_node_dir);
+
 }  // namespace kv_cache
 }  // namespace tpu_raiden
 
