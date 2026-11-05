@@ -1846,6 +1846,11 @@ uint8_t* KVCacheManagerBase::GetBlockArrayHostPointer(size_t block_array_idx,
   if (block_array_idx >= pools_.size()) {
     return nullptr;
   }
+  // As above: with bounded host layers a pool's bytes sit in the buffer its
+  // transfer leased (GetBlockChunks), not in its own storage's buffer.
+  if (layers_.size() < num_layers_) {
+    return nullptr;
+  }
   const PoolSpec& pool = pools_[block_array_idx];
   uint8_t* storage_base = GetHostPointer(pool.storage_index, shard_idx);
   if (storage_base == nullptr) {
